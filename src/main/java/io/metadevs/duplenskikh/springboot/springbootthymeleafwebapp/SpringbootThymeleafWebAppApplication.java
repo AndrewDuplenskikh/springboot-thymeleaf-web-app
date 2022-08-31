@@ -1,4 +1,4 @@
-package metadevs.duplenskikh.springboot.springbootthymeleafwebapp;
+package io.metadevs.duplenskikh.springboot.springbootthymeleafwebapp;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

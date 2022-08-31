@@ -1,4 +1,4 @@
-package metadevs.duplenskikh.springboot.springbootthymeleafwebapp.entity;
+package io.metadevs.duplenskikh.springboot.springbootthymeleafwebapp.entity;
 
 import javax.persistence.*;
 

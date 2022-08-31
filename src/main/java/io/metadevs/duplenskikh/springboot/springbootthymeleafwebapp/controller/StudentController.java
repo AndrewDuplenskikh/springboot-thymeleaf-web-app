@@ -1,12 +1,14 @@
-package metadevs.duplenskikh.springboot.springbootthymeleafwebapp.controller;
+package io.metadevs.duplenskikh.springboot.springbootthymeleafwebapp.controller;
 
-import metadevs.duplenskikh.springboot.springbootthymeleafwebapp.entity.Student;
-import metadevs.duplenskikh.springboot.springbootthymeleafwebapp.repository.StudentRepository;
+import io.metadevs.duplenskikh.springboot.springbootthymeleafwebapp.entity.Student;
+import io.metadevs.duplenskikh.springboot.springbootthymeleafwebapp.repository.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.View;
+import org.springframework.web.servlet.view.RedirectView;
 
 import javax.validation.Valid;
 
@@ -18,7 +20,7 @@ public class StudentController {
     private StudentRepository studentRepository;
 
     @GetMapping("showForm")
-    public String showStudentForm() {
+    public String showStudentForm(Student student) {
         return "add-student";
     }
 
@@ -46,26 +48,24 @@ public class StudentController {
         return "update-student";
     }
 
-    @GetMapping("update/{id}")
-    public String updateStudent(@PathVariable("id") long id,@Valid Student student, BindingResult result, Model model) {
+    @PostMapping("update/{id}")
+    public RedirectView updateStudent(@PathVariable("id") long id, @Valid Student student, BindingResult result, Model model) {
         if (result.hasErrors()) {
             student.setId(id);
-            return "update-student";
+            return new RedirectView("/students/list");
         }
-        //update student
         studentRepository.save(student);
-        // get all students (with update)
         model.addAttribute("students", this.studentRepository.findAll());
-        return "index";
+        return new RedirectView("/students/list");
     }
 
-    @DeleteMapping("delete/{id}")
-    public String deleteStudent(@PathVariable ("id") long id, Model model) {
+    @PostMapping("delete/{id}")
+    public RedirectView deleteStudent(@PathVariable ("id") long id, Model model) {
         Student student = this.studentRepository
                 .findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid student id: " + id));
         this.studentRepository.delete(student);
         model.addAttribute("students", this.studentRepository.findAll());
-        return "index";
+        return new RedirectView("/students/list");
     }
 }

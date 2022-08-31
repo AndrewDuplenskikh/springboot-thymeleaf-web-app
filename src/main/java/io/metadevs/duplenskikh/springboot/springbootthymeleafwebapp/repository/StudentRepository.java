@@ -1,6 +1,6 @@
-package metadevs.duplenskikh.springboot.springbootthymeleafwebapp.repository;
+package io.metadevs.duplenskikh.springboot.springbootthymeleafwebapp.repository;
 
-import metadevs.duplenskikh.springboot.springbootthymeleafwebapp.entity.Student;
+import io.metadevs.duplenskikh.springboot.springbootthymeleafwebapp.entity.Student;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

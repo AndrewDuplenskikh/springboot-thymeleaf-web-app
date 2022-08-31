@@ -1,4 +1,4 @@
-package metadevs.duplenskikh.springboot.springbootthymeleafwebapp;
+package io.metadevs.duplenskikh.springboot.springbootthymeleafwebapp;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
