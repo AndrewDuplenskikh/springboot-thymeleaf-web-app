@@ -1,71 +1,65 @@
 package io.metadevs.duplenskikh.springboot.springbootthymeleafwebapp.controller;
 
 import io.metadevs.duplenskikh.springboot.springbootthymeleafwebapp.entity.Student;
-import io.metadevs.duplenskikh.springboot.springbootthymeleafwebapp.repository.StudentRepository;
+import io.metadevs.duplenskikh.springboot.springbootthymeleafwebapp.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.view.RedirectView;
 
 import javax.validation.Valid;
 
 @Controller
-@RequestMapping("/students/")
+@RequestMapping("/students")
 public class StudentController {
 
     @Autowired
-    private StudentRepository studentRepository;
+    private StudentService studentService;
 
-    @GetMapping("showForm")
+    @GetMapping("/add-student")
     public String showStudentForm(Student student) {
         return "add-student";
     }
 
-    @GetMapping("list")
+    @GetMapping("")
     public String students(Model model) {
-        model.addAttribute("students", this.studentRepository.findAll());
+        model.addAttribute("students", studentService.getAllStudents());
         return "index";
     }
 
-    @PostMapping("add")
-    public String addStudent(@Valid Student student, BindingResult result, Model model) {
+    @PostMapping("/add")
+    public RedirectView addStudent(@Valid Student student, BindingResult result, Model model) {
         if (result.hasErrors()) {
-            return "add-student";
+            return new RedirectView("/add-student");
         }
-        this.studentRepository.save(student);
-        return "redirect:list";
+        studentService.save(student);
+        return new RedirectView("/students");
     }
 
-    @GetMapping("edit/{id}")
+    @GetMapping("/edit/{id}")
     public String showUpdateForm(@PathVariable("id") long id, Model model) {
-        Student student = this.studentRepository
-                .findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid student id: " + id));
+        Student student = studentService.getById(id);
         model.addAttribute("student", student);
         return "update-student";
     }
 
-    @PostMapping("update/{id}")
+    @PostMapping("/update/{id}")
     public RedirectView updateStudent(@PathVariable("id") long id, @Valid Student student, BindingResult result, Model model) {
         if (result.hasErrors()) {
             student.setId(id);
-            return new RedirectView("/students/list");
+            return new RedirectView("/students");
         }
-        studentRepository.save(student);
-        model.addAttribute("students", this.studentRepository.findAll());
-        return new RedirectView("/students/list");
+        studentService.save(student);
+        model.addAttribute("students", studentService.getAllStudents());
+        return new RedirectView("/students");
     }
 
-    @PostMapping("delete/{id}")
+    @PostMapping("/delete/{id}")
     public RedirectView deleteStudent(@PathVariable ("id") long id, Model model) {
-        Student student = this.studentRepository
-                .findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid student id: " + id));
-        this.studentRepository.delete(student);
-        model.addAttribute("students", this.studentRepository.findAll());
-        return new RedirectView("/students/list");
+        studentService.delete(id);
+        model.addAttribute("students", studentService.getAllStudents());
+        return new RedirectView("/students");
     }
 }
